@@ -14,7 +14,6 @@
   <script src="lib/onsen/js/angular/angular.js"></script>    
   <script src="lib/onsen/js/onsenui.js"></script>    
   
-  <script src="cordova.js"></script>  
   <script src="js/app.js"></script>  
   <script>
     ons.ready(function() {
@@ -79,7 +78,7 @@
   <!-- tab:homeに紐づくhome.htmlの定義-->
   <ons-template id="home.html">
     <ons-navigator>
-      <ons-page>
+      <ons-page id="home-page">
         <ons-toolbar>
           <div class="center">Home</div>
         </ons-toolbar>
@@ -97,17 +96,24 @@
 
   <!-- tab:year.html -->
   <ons-template id="year.html">
-    <ons-page>
+    <ons-page id="year-page">
       <ons-toolbar ng-controller="CalendarController">
-        <div class="right"><ons-toolbar-button ng-click="showMonth()">Month</ons-toolbar-button></div>
         <div class="center">Year</div>
       </ons-toolbar>
+      
+      <ons-list ng-controller="CalendarControllerY">
+        <ons-list-item modifier="chevron" ng-repeat="item in items" ng-click="showMonth($index)">
+            <ons-row>
+                <ons-col>{{item.year}}/{{item.month}}</ons-col>
+            </ons-row>
+        </ons-list-item>
+      </ons-list>
     </ons-page>
   </ons-template>
     
   <!-- month.html-->
   <ons-template id="month.html">
-    <ons-page>
+    <ons-page id="month-page">
       <ons-toolbar>
         <div class="left"><ons-back-button>Year</ons-back-button></div>
         <div class="center">Month</div>
@@ -133,7 +139,7 @@
   </ons-template>
 
   <ons-template id="day.html">
-    <ons-page ng-controller="DetailController">
+    <ons-page id="day-page" ng-controller="DetailController">
 
       <ons-toolbar>
         <div class="left"><ons-back-button>Month</ons-back-button></div>
@@ -179,7 +185,7 @@
   <!-- tab:settings -->
   <ons-template id="settings.html">
     <ons-navigator>
-      <ons-page>
+      <ons-page id="settings-page">
         <ons-toolbar>
           <div class="center">settings</div>
         </ons-toolbar>

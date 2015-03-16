@@ -63,4 +63,55 @@
       
       return data;
   });
+  
+  // 年のコントローラ
+  module.value('$baseDate',new Date());
+  module.controller('CalendarControllerY', function($scope, $dataY) {
+    $scope.items = $dataY.items;
+    $scope.showMonth = function(index) {
+        setTimeout(function(){
+          $scope.navi.pushPage('month.html');
+        });
+    };
+  });
+  module.factory('$dataY', ['$baseDate', function($baseDate) {
+      var dataY = {};
+      var periodY = 20;
+      
+      // 基準日と範囲
+      var today = $baseDate;
+      var fromYear = today.getFullYear() - periodY;
+      var toYear = today.getFullYear();
+      var currentYear = toYear;
+      
+      // 収集する値
+      var items = [];
+      var years =[];
+      
+      // ひと月ずつ加算
+      while(currentYear >= fromYear){
+        // 12か月を追加
+        for(var currentMonth =  11; currentMonth >= 0; currentMonth-- ){
+          // 基準年月より先日付は読み飛ばす
+          if ( currentYear === today.getFullYear() &&  currentMonth > today.getMonth()) {
+              continue;
+          }
+          items.push({ year : currentYear, month: currentMonth + 1});
+        }
+        years.push(currentYear);
+        // カウントダウン
+        currentYear--;
+      }
+      
+      // 整形
+      dataY = {
+          years : years,
+          today : today,
+          items : items
+      };
+      console.log(dataY);
+      return dataY;
+      
+  }]);
+  
 })();
