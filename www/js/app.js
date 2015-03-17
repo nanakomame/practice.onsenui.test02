@@ -1,81 +1,97 @@
 (function(){
+  // controller
+  //////////////////////////////////////////
+  // app
+  //////////////////////////////////////////
   'use strict';
   var module = angular.module('app', ['onsen']);
-  
-  module.controller('AppController', function($scope, $data) {
+  // controller
+  module.controller('AppController', function($scope) {
     $scope.doSomething = function() {
       setTimeout(function() {
         alert('tappaed');
       }, 100);
     };
   });
-  
-  module.controller('DetailController', function($scope, $data) {
-    $scope.item = $data.selectedItem;
+  //////////////////////////////////////////
+  // day
+  //////////////////////////////////////////
+  module.controller('CalendarControllerD', function($scope, $dataDays) {
+    $scope.day = $dataDays.data.selectedDay;   
   });
-  
-  module.controller('CalendarController', function($scope, $data) {
-    $scope.items = $data.items;  
-    $scope.showYear = function(index) {
-        setTimeout(function(){
-          $scope.navi.pushPage('year.html');
-       });
-    };
-    $scope.showMonth = function() {
-        setTimeout(function(){
-          $scope.navi.pushPage('month.html');
-        });
-    };
+  //////////////////////////////////////////
+  // month
+  //////////////////////////////////////////
+  module.controller('CalendarControllerM', function($scope, $dataDays) {
+    $scope.days = $dataDays.data.days;
     $scope.showDay = function(index) {
         setTimeout(function(){
-          var selectedItem = $data.items[index];
-          $data.selectedItem = selectedItem;
-          $scope.navi.pushPage('day.html', {title : selectedItem.title});
+          var selectedDay = $dataDays.data.days[index];
+          $dataDays.data.selectedDay = selectedDay;
+          $scope.navi.pushPage('day.html', {title : selectedDay.title});
       });
     };
   });
-  
-  module.factory('$data', function() {
-      var data = {};
-      
-      data.items = [
-          { 
-              title: 'Item 1 Title',
-              label: '4h',
-              desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-          },
-          { 
-              title: 'Another Item Title',
-              label: '6h',
-              desc: 'Ut enim ad minim veniam.'
-          },
-          { 
-              title: 'Yet Another Item Title',
-              label: '1day ago',
-              desc: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
-          },
-          { 
-              title: 'Yet Another Item Title',
-              label: '1day ago',
-              desc: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
-          }
-      ]; 
-      
-      return data;
-  });
-  
-  // 年のコントローラ
-  module.value('$baseDate',new Date());
-  module.controller('CalendarControllerY', function($scope, $dataY) {
-    $scope.items = $dataY.items;
+  //////////////////////////////////////////
+  // year
+  //////////////////////////////////////////
+  module.controller('CalendarControllerY', function($scope, $dataYM, $dataDays) {
+    $scope.months = $dataYM.months;
     $scope.showMonth = function(index) {
         setTimeout(function(){
+          var selectedYM = $dataYM.months[index];
+          $dataYM.selectedYM = selectedYM;
+          $dataDays.data.days = $dataDays.getData(selectedYM);
           $scope.navi.pushPage('month.html');
         });
     };
   });
-  module.factory('$dataY', ['$baseDate', function($baseDate) {
-      var dataY = {};
+  
+  // data
+  //////////////////////////////////////////
+  // List days
+  // data:{days:[{}...],selectedDay:{}}
+  //////////////////////////////////////////
+  module.factory('$dataDays', function() {
+    var service = {
+      data : {},
+      getData : function(selectedYM) {
+        var days = [
+            { 
+                title: 'Item 1 Title' + selectedYM.year + selectedYM.month,
+                label: '4h',
+                desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+            },
+            { 
+                title: 'Another Item Title',
+                label: '6h',
+                desc: 'Ut enim ad minim veniam.'
+            },
+            { 
+                title: 'Yet Another Item Title',
+                label: '1day ago',
+                desc: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
+            },
+            { 
+                title: 'Yet Another Item Title',
+                label: '1day ago',
+                desc: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
+            }
+        ];
+        return days;
+      }
+    };
+    return service;
+  });
+  
+
+  //////////////////////////////////////////
+  // List Year,Month
+  // {months:[{year:,month:}...],selectedYM:{}}
+  //////////////////////////////////////////
+  module.value('$baseDate',new Date());  // 当日先未来が必要になったら改修すること
+  module.factory('$dataYM', ['$baseDate', function($baseDate) {
+      var dataYM = {};
       var periodY = 20;
       
       // 基準日と範囲
@@ -85,7 +101,7 @@
       var currentYear = toYear;
       
       // 収集する値
-      var items = [];
+      var months = [];
       var years =[];
       
       // ひと月ずつ加算
@@ -96,7 +112,7 @@
           if ( currentYear === today.getFullYear() &&  currentMonth > today.getMonth()) {
               continue;
           }
-          items.push({ year : currentYear, month: currentMonth + 1});
+          months.push({ year : currentYear, month: currentMonth + 1});
         }
         years.push(currentYear);
         // カウントダウン
@@ -104,13 +120,12 @@
       }
       
       // 整形
-      dataY = {
+      dataYM = {
           years : years,
           today : today,
-          items : items
+          months : months
       };
-      console.log(dataY);
-      return dataY;
+      return dataYM;
       
   }]);
   

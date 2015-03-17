@@ -97,14 +97,14 @@
   <!-- tab:year.html -->
   <ons-template id="year.html">
     <ons-page id="year-page">
-      <ons-toolbar ng-controller="CalendarController">
+      <ons-toolbar>
         <div class="center">Year</div>
       </ons-toolbar>
       
       <ons-list ng-controller="CalendarControllerY">
-        <ons-list-item modifier="chevron" ng-repeat="item in items" ng-click="showMonth($index)">
+        <ons-list-item modifier="chevron" ng-repeat="month in months" ng-click="showMonth($index)">
             <ons-row>
-                <ons-col>{{item.year}}/{{item.month}}</ons-col>
+                <ons-col>{{month.year}}/{{month.month}}</ons-col>
             </ons-row>
         </ons-list-item>
       </ons-list>
@@ -119,18 +119,18 @@
         <div class="center">Month</div>
       </ons-toolbar>
 
-      <ons-list ng-controller="CalendarController">
-        <ons-list-item modifier="chevron" class="item" ng-repeat="item in items" ng-click="showDay($index)">
+      <ons-list ng-controller="CalendarControllerM">
+        <ons-list-item modifier="chevron" class="item" ng-repeat="day in days" ng-click="showDay($index)">
           <ons-row>
             <ons-col width="60px"> 
               <div class="item-thum"></div>
             </ons-col>
             <ons-col>
               <header>
-                <span class="item-title">{{item.title}}</span>
-                <span class="item-label">{{item.label}}</span>
+                <span class="item-title">{{day.title}}</span>
+                <span class="item-label">{{day.label}}</span>
               </header>
-              <p class="item-desc">{{item.desc}}</p>
+              <p class="item-desc">{{day.desc}}</p>
             </ons-col>
           </ons-row>                          
         </ons-list-item>
@@ -139,7 +139,7 @@
   </ons-template>
 
   <ons-template id="day.html">
-    <ons-page id="day-page" ng-controller="DetailController">
+    <ons-page id="day-page" ng-controller="CalendarControllerD">
 
       <ons-toolbar>
         <div class="left"><ons-back-button>Month</ons-back-button></div>
@@ -154,10 +154,10 @@
             </ons-col>
             <ons-col>
               <header>
-                <span class="item-title">{{item.title}}</span>
-                <span class="item-label">{{item.label}}</span>
+                <span class="item-title">{{day.title}}</span>
+                <span class="item-label">{{day.label}}</span>
               </header>
-              <p class="item-desc">{{item.desc}}</p>
+              <p class="item-desc">{{day.desc}}</p>
             </ons-col>
           </ons-row>
         </ons-list-item>
