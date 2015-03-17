@@ -17,7 +17,7 @@
   // day
   //////////////////////////////////////////
   module.controller('CalendarControllerD', function($scope, $dataDays) {
-    $scope.day = $dataDays.data.selectedDay;   
+    $scope.day = $dataDays.data.selectedDay;
   });
   //////////////////////////////////////////
   // month
@@ -58,24 +58,34 @@
       getData : function(selectedYM) {
         var days = [
             { 
-                title: 'Item 1 Title' + selectedYM.year + selectedYM.month,
-                label: '4h',
-                desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+                date    : new Date(2015,2,17,0,0,0,0),
+                food    : [{date:new Date(2015,2,16,9,0,0,0),amount:'たくさん',memo:''},
+                           {date:new Date(2015,2,16,18,0,0,0),amount:'ふつう',memo:'おやつ少しとかメモってみたり。おやつ枠は別に作ったがいいかなあ。'}],
+                medicine: [{date:new Date(2015,2,16,9,0,0,0),amount:'2',memo:'調子が悪かったのでお薬大目。'},
+                           {date:new Date(2015,2,16,18,0,0,0),amount:'1',memo:'予防接種。'}],
+                excreta : [{date:new Date(2015,2,16,08,0,0,0),amount:'ふつう',memo:''}],
+                memo    : 'あいうえお。メモ欄です。'
             },
             { 
-                title: 'Another Item Title',
-                label: '6h',
-                desc: 'Ut enim ad minim veniam.'
+                date    : new Date(2015,2,16),
+                food    : [],
+                medicine: [],
+                excreta : [],
+                memo    : 'かきくけこ。メモ欄です。'
             },
             { 
-                title: 'Yet Another Item Title',
-                label: '1day ago',
-                desc: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
+                date    : new Date(2015,2,15),
+                food    : [],
+                medicine: [],
+                excreta : [],
+                memo    : 'さしすせそ。メモ欄です。'
             },
             { 
-                title: 'Yet Another Item Title',
-                label: '1day ago',
-                desc: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
+                date    : new Date(2015,2,14),
+                food    : [],
+                medicine: [],
+                excreta : [],
+                memo    : 'たちつてと。メモ欄です。'
             }
         ];
         return days;
@@ -86,7 +96,7 @@
   
 
   //////////////////////////////////////////
-  // List Year,Month
+  // List Year,Month(order by date desc)
   // {months:[{year:,month:}...],selectedYM:{}}
   //////////////////////////////////////////
   module.value('$baseDate',new Date());  // 当日先未来が必要になったら改修すること
