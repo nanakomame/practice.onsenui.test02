@@ -6,9 +6,9 @@
   'use strict';
   var module = angular.module('app', ['onsen']);
   // controller
-  module.controller('AppController', function($scope) {
+  module.controller('AppController', function($scope, $timeout) {
     $scope.doSomething = function() {
-      setTimeout(function() {
+      $timeout(function() {
         alert('tappaed');
       }, 100);
     };
@@ -16,34 +16,70 @@
   //////////////////////////////////////////
   // day
   //////////////////////////////////////////
-  module.controller('CalendarControllerD', function($scope, $dataDays) {
+  module.controller('CalendarControllerD', function($scope, $timeout, $dataDays) {
     $scope.day = $dataDays.data.selectedDay;
   });
   //////////////////////////////////////////
   // month
   //////////////////////////////////////////
-  module.controller('CalendarControllerM', function($scope, $dataDays) {
+  module.controller('CalendarControllerM', function($scope, $timeout, $dataDays) {
     $scope.days = $dataDays.data.days;
     $scope.showDay = function(index) {
-        setTimeout(function(){
+        $timeout(function(){
           var selectedDay = $dataDays.data.days[index];
           $dataDays.data.selectedDay = selectedDay;
           $scope.navi.pushPage('day.html', {title : selectedDay.title});
-      });
+      },100);
     };
   });
   //////////////////////////////////////////
   // year
   //////////////////////////////////////////
-  module.controller('CalendarControllerY', function($scope, $dataYM, $dataDays) {
+  module.controller('CalendarControllerY', function($scope, $timeout, $dataYM, $dataDays) {
     $scope.months = $dataYM.months;
     $scope.showMonth = function(index) {
-        setTimeout(function(){
+        $timeout(function(){
           var selectedYM = $dataYM.months[index];
           $dataYM.selectedYM = selectedYM;
           $dataDays.data.days = $dataDays.getData(selectedYM);
           $scope.navi.pushPage('month.html');
-        });
+        },100);
+    };
+    // pull hookのデータロード(見た目の追加のみ）
+    $scope.refreshListView = function($done){
+      $timeout(function(){
+        var months = $scope.months;
+        var now = new Date();
+        var to = { year  : now.getFullYear(),
+                   month : now.getMonth()+1};
+        var from={};
+        
+        // 開始年月を決定
+        if ( months.length === 0 ) {
+            from.year = now.getFullYear();
+            from.month = now.getMonth();
+        } else {
+            from = months[0];
+        }
+        // 開始年月から現在の年月までを差し込む
+        for(var year = from.year; year <= to.year; year++){
+          for(var month = 1; month <= 12; month++){
+            // 開始年月より過去日付は読み飛ばす
+            if ( year <= from.year &&  month <= from.month) {
+                continue;
+            }
+            // 終了年月より先日付は読み飛ばす
+            if ( year >= to.year &&  month > to.month) {
+                continue;
+            }
+            // 追加
+            $scope.months.unshift({year:year, month:month});
+          }    
+        }
+        //終了したのでコールバックを呼ぶ
+        $done();
+      },100);
+        
     };
   });
   
@@ -99,7 +135,7 @@
   // List Year,Month(order by date desc)
   // {months:[{year:,month:}...],selectedYM:{}}
   //////////////////////////////////////////
-  module.value('$baseDate',new Date());  // 当日先未来が必要になったら改修すること
+  module.value('$baseDate',new Date());  // 先日付が必要になったら改修すること
   module.factory('$dataYM', ['$baseDate', function($baseDate) {
       var dataYM = {};
       var periodY = 20;
